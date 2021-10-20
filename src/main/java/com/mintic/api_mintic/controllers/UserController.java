@@ -2,6 +2,7 @@ package com.mintic.api_mintic.controllers;
 
 import com.mintic.api_mintic.models.request.UserRegisterRequestModel;
 import com.mintic.api_mintic.models.responses.UserRestModel;
+import com.mintic.api_mintic.services.IUserService;
 import com.mintic.api_mintic.shared.UserCreateDto;
 import com.mintic.api_mintic.shared.UserDto;
 
@@ -21,6 +22,9 @@ public class UserController {
     @Autowired
     ModelMapper modelmapper;
 
+    @Autowired
+    IUserService iUserService;
+
     @GetMapping
     public String getUser(){
         
@@ -32,7 +36,7 @@ public class UserController {
 
         UserCreateDto  UserCreateDto = modelmapper.map(UserRegisterRequestModel,UserCreateDto.class);
 
-        UserDto userDto;
+        UserDto userDto = iUserService.createUser(UserCreateDto);
         UserRestModel userRestModel = modelmapper.map(userDto, UserRestModel.class);
 
         return userRestModel;
