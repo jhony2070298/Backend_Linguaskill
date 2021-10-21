@@ -16,9 +16,9 @@ public class ApiMinticApplication {
 
 	@Bean
 	public ModelMapper modelMapper(){
-		ModelMapper mapper = new ModelMapper();
+		ModelMapper modelmapper = new ModelMapper();
 
-		return mapper;
+		return modelmapper;
 	}
 
 	@Bean

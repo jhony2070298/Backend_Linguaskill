@@ -1,5 +1,6 @@
 package com.mintic.api_mintic.services;
 
+import java.util.ArrayList;
 import java.util.UUID;
 
 import com.mintic.api_mintic.data.entities.UserEntity;
@@ -9,6 +10,7 @@ import com.mintic.api_mintic.shared.UserDto;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -18,7 +20,7 @@ import org.springframework.stereotype.Service;
 public class UserService implements IUserService{
 
     @Autowired
-    ModelMapper modelMapper;
+    ModelMapper modelmapper;
 
     @Autowired
     IUserRepository iUserRepository;
@@ -39,21 +41,27 @@ public class UserService implements IUserService{
 
         }
 
-        UserEntity userEntityDto = modelMapper.map(userCreateDto, UserEntity.class);
+        UserEntity userEntityDto = modelmapper.map(userCreateDto, UserEntity.class);
         userEntityDto.setUserId(UUID.randomUUID().toString());
         userEntityDto.setEcryptedPassword(bCryptPasswordEncoder.encode(userCreateDto.getPassword()));
 
         UserEntity userEntitySave = iUserRepository.save(userEntityDto);
 
-        UserDto userDto = modelMapper.map(userEntitySave, UserDto.class);
+        UserDto userDto = modelmapper.map(userEntitySave, UserDto.class);
 
         return userDto;
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+
+        UserEntity userEntity = iUserRepository.findByUserName(username);
+
+        if(userEntity == null){
+            throw new UsernameNotFoundException(username);
+        }
         
-        return null;
+        return new User(userEntity.getUserName(),userEntity.getEcryptedPassword(),new ArrayList<>());
     }
     
 }
