@@ -37,6 +37,7 @@ public class UserController {
         UserCreateDto  UserCreateDto = modelmapper.map(UserRegisterRequestModel,UserCreateDto.class);
 
         UserDto userDto = iUserService.createUser(UserCreateDto);
+        
         UserRestModel userRestModel = modelmapper.map(userDto, UserRestModel.class);
 
         return userRestModel;
