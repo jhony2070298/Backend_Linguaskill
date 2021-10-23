@@ -8,6 +8,9 @@ import com.mintic.api_mintic.shared.UserDto;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,25 +23,34 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
 
     @Autowired
-    ModelMapper modelmapper;
+    ModelMapper modelMapper;
 
     @Autowired
     IUserService iUserService;
 
-    @GetMapping
-    public String getUser(){
+    @GetMapping(produces = {MediaType.APPLICATION_XML_VALUE,MediaType.APPLICATION_JSON_VALUE})
+    public UserRestModel getUser(){
         
-        return "get user";
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+
+        String userName = authentication.getPrincipal().toString();
+
+        UserDto userDto = iUserService.getUser(userName);
+
+        UserRestModel userRestModel = modelMapper.map(userDto,UserRestModel.class);
+
+        return userRestModel;
     }
 
     @PostMapping
     public UserRestModel createUser(@RequestBody UserRegisterRequestModel UserRegisterRequestModel){
 
-        UserCreateDto  UserCreateDto = modelmapper.map(UserRegisterRequestModel,UserCreateDto.class);
+        UserCreateDto  UserCreateDto = modelMapper.map(UserRegisterRequestModel,UserCreateDto.class);
 
         UserDto userDto = iUserService.createUser(UserCreateDto);
         
-        UserRestModel userRestModel = modelmapper.map(userDto, UserRestModel.class);
+        UserRestModel userRestModel = modelMapper.map(userDto, UserRestModel.class);
 
         return userRestModel;
     }

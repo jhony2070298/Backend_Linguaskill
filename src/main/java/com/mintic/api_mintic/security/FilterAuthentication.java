@@ -11,6 +11,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mintic.api_mintic.models.request.UserLoginRequestModel;
+import com.mintic.api_mintic.services.IUserService;
+import com.mintic.api_mintic.shared.UserDto;
+import com.mintic.api_mintic.utils.AppContext;
 
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -65,6 +68,12 @@ public class FilterAuthentication extends UsernamePasswordAuthenticationFilter{
                         .signWith(SignatureAlgorithm.HS512, ConstantsSecurity.TOKEN_SECRET)
                         .compact();
 
+        IUserService iUserService = (IUserService) AppContext.getBean("userService");
+        UserDto userDto = iUserService.getUser(userName);
+
+
+        response.addHeader("Access-Control-Expose-Headers", "Authorization, UserId");
+        response.addHeader("UserId", userDto.getUserId());
         response.addHeader(ConstantsSecurity.HEADER_STRING, ConstantsSecurity.TOKEN_PREFIX + token);
 
     }

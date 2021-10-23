@@ -20,7 +20,7 @@ import org.springframework.stereotype.Service;
 public class UserService implements IUserService{
 
     @Autowired
-    ModelMapper modelmapper;
+    ModelMapper modelMapper;
 
     @Autowired
     IUserRepository iUserRepository;
@@ -41,13 +41,13 @@ public class UserService implements IUserService{
 
         }
 
-        UserEntity userEntityDto = modelmapper.map(userCreateDto, UserEntity.class);
+        UserEntity userEntityDto = modelMapper.map(userCreateDto, UserEntity.class);
         userEntityDto.setUserId(UUID.randomUUID().toString());
         userEntityDto.setEcryptedPassword(bCryptPasswordEncoder.encode(userCreateDto.getPassword()));
 
         UserEntity userEntitySave = iUserRepository.save(userEntityDto);
 
-        UserDto userDto = modelmapper.map(userEntitySave, UserDto.class);
+        UserDto userDto = modelMapper.map(userEntitySave, UserDto.class);
 
         return userDto;
     }
@@ -62,6 +62,21 @@ public class UserService implements IUserService{
         }
         
         return new User(userEntity.getUserName(),userEntity.getEcryptedPassword(),new ArrayList<>());
+    }
+
+    @Override
+    public UserDto getUser(String userName) {
+
+        UserEntity userEntity = iUserRepository.findByUserName(userName);
+
+        if(userEntity == null){
+            throw new UsernameNotFoundException(userName);
+        }
+
+        UserDto userDto = modelMapper.map(userEntity, UserDto.class);
+
+        
+        return userDto;
     }
     
 }
