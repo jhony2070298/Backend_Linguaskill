@@ -8,6 +8,9 @@ import com.mintic.api_mintic.shared.UserDto;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,30 +18,41 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/candidatos")
+@RequestMapping("/usuarios")
 public class UserController {
 
     @Autowired
     ModelMapper modelMapper;
 
     @Autowired
-    IUserService iUsuarioService;
+    IUserService iUserService;
 
-    @GetMapping
-    public String obtenerUsuario(){
-        return "obtener usuarios";
+    @GetMapping(produces = {MediaType.APPLICATION_XML_VALUE,MediaType.APPLICATION_JSON_VALUE})
+    public UserRestModel getUser(){
+        
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+
+        String userName = authentication.getPrincipal().toString();
+
+        UserDto userDto = iUserService.getUser(userName);
+
+        UserRestModel userRestModel = modelMapper.map(userDto,UserRestModel.class);
+
+        return userRestModel;
     }
 
     @PostMapping
-    public UserRestModel crearUsuario(@RequestBody UserRegisterRequestModel usuarioRegistrarRequestModel){
+    public UserRestModel createUser(@RequestBody UserRegisterRequestModel UserRegisterRequestModel){
 
-        UserCreateDto usuarioCrearDto = modelMapper.map(usuarioRegistrarRequestModel, UserCreateDto.class);
+        UserCreateDto  UserCreateDto = modelMapper.map(UserRegisterRequestModel,UserCreateDto.class);
 
-        UserDto usuarioDto = iUsuarioService.crearUsuario(usuarioCrearDto);
+        UserDto userDto = iUserService.createUser(UserCreateDto);
+        
+        UserRestModel userRestModel = modelMapper.map(userDto, UserRestModel.class);
 
-        UserRestModel usuarioRestModel = modelMapper.map(usuarioDto, UserRestModel.class);
-
-        return usuarioRestModel;
+        return userRestModel;
     }
     
 }
+

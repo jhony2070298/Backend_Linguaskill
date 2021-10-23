@@ -1,5 +1,7 @@
 package com.mintic.api_mintic;
 
+import com.mintic.api_mintic.utils.AppContext;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -16,16 +18,20 @@ public class ApiMinticApplication {
 
 	@Bean
 	public ModelMapper modelMapper(){
+		ModelMapper modelmapper = new ModelMapper();
 
-		ModelMapper mapper = new ModelMapper();
-
-		return mapper;
+		return modelmapper;
 	}
 
-	
 	@Bean
-	public BCryptPasswordEncoder bCryptPasswordEncoder() {
+	public BCryptPasswordEncoder bCryptPasswordEncoder(){
 		return new BCryptPasswordEncoder();
-	} 
+
+	}
+
+	@Bean
+	public AppContext appContext(){
+		return new AppContext();
+	}
 
 }

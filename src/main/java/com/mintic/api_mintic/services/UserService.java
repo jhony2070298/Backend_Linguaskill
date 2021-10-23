@@ -1,5 +1,6 @@
 package com.mintic.api_mintic.services;
 
+import java.util.ArrayList;
 import java.util.UUID;
 
 import com.mintic.api_mintic.data.entities.UserEntity;
@@ -9,6 +10,7 @@ import com.mintic.api_mintic.shared.UserDto;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -17,42 +19,64 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserService implements IUserService{
 
-     @Autowired
-     BCryptPasswordEncoder bCryptPasswordEncoder;
-
     @Autowired
     ModelMapper modelMapper;
 
     @Autowired
-    IUserRepository iUsuarioRepository;
+    IUserRepository iUserRepository;
+
+    @Autowired
+    BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Override
-    public UserDto crearUsuario(UserCreateDto usuarioCrearDto) {
+    public UserDto createUser(UserCreateDto userCreateDto) {
 
-        if(iUsuarioRepository.findByCorreo(usuarioCrearDto.getCorreo()) != null){
+        if(iUserRepository.findByCorreo(userCreateDto.getCorreo()) != null){
             throw new RuntimeException("Este correo ya se encuentra registrado");
+
         }
 
-        if(iUsuarioRepository.findByUserName(usuarioCrearDto.getUserName()) != null){
-            throw new RuntimeException("Este nombre de usuario ya está en uso");
+        if(iUserRepository.findByUserName(userCreateDto.getUserName()) != null){
+            throw new RuntimeException("El nombre de usuario ya esta en uso");
+
         }
 
-        UserEntity usuarioEntityDto = modelMapper.map(usuarioCrearDto, UserEntity.class);
-        usuarioEntityDto.setUserId(UUID.randomUUID().toString());
-        usuarioEntityDto.setEncryptedPassword(bCryptPasswordEncoder.encode(usuarioCrearDto.getPassword()));
+        UserEntity userEntityDto = modelMapper.map(userCreateDto, UserEntity.class);
+        userEntityDto.setUserId(UUID.randomUUID().toString());
+        userEntityDto.setEcryptedPassword(bCryptPasswordEncoder.encode(userCreateDto.getPassword()));
 
-        UserEntity usuarioEntitySave = iUsuarioRepository.save(usuarioEntityDto);
+        UserEntity userEntitySave = iUserRepository.save(userEntityDto);
 
-        UserDto usuarioDto = modelMapper.map(usuarioEntitySave, UserDto.class);
-        
-        return usuarioDto;
+        UserDto userDto = modelMapper.map(userEntitySave, UserDto.class);
+
+        return userDto;
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+
+        UserEntity userEntity = iUserRepository.findByUserName(username);
+
+        if(userEntity == null){
+            throw new UsernameNotFoundException(username);
+        }
         
-        return null;
+        return new User(userEntity.getUserName(),userEntity.getEcryptedPassword(),new ArrayList<>());
+    }
+
+    @Override
+    public UserDto getUser(String userName) {
+
+        UserEntity userEntity = iUserRepository.findByUserName(userName);
+
+        if(userEntity == null){
+            throw new UsernameNotFoundException(userName);
+        }
+
+        UserDto userDto = modelMapper.map(userEntity, UserDto.class);
+
+        
+        return userDto;
     }
     
-
 }

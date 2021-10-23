@@ -3,7 +3,8 @@ package com.mintic.api_mintic.shared;
 import java.io.Serializable;
 
 public class UserDto implements Serializable {
-    
+
+    private static final long serialVersionUID = 1L;
 
     private long id;
     private String userId;
@@ -11,63 +12,53 @@ public class UserDto implements Serializable {
     private String correo;
     private String userName;
     private String password;
-    private String encryptedPassword;
-
-
+    private String ecryptedPassword;
+    
     public long getId() {
-        return this.id;
+        return id;
     }
-
     public void setId(long id) {
         this.id = id;
     }
-
     public String getUserId() {
-        return this.userId;
+        return userId;
     }
-
     public void setUserId(String userId) {
         this.userId = userId;
     }
-
     public String getNombre() {
-        return this.nombre;
+        return nombre;
     }
-
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }
-
     public String getCorreo() {
-        return this.correo;
+        return correo;
     }
-
     public void setCorreo(String correo) {
         this.correo = correo;
     }
-
     public String getUserName() {
-        return this.userName;
+        return userName;
     }
-
     public void setUserName(String userName) {
         this.userName = userName;
     }
-
     public String getPassword() {
-        return this.password;
+        return password;
     }
-
     public void setPassword(String password) {
         this.password = password;
     }
-
-    public String getEncryptedPassword() {
-        return this.encryptedPassword;
+    public String getEcryptedPassword() {
+        return ecryptedPassword;
+    }
+    public void setEcryptedPassword(String ecryptedPassword) {
+        this.ecryptedPassword = ecryptedPassword;
     }
 
-    public void setEncryptedPassword(String encryptedPassword) {
-        this.encryptedPassword = encryptedPassword;
-    }
+   
 
+    
+    
 }

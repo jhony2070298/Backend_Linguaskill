@@ -2,44 +2,40 @@ package com.mintic.api_mintic.shared;
 
 import java.io.Serializable;
 
-public class UserCreateDto  implements Serializable{
+public class UserCreateDto implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+    
     private String nombre;
     private String correo;
     private String userName;
     private String password;
 
     public String getNombre() {
-        return this.nombre;
+        return nombre;
     }
-
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }
-
     public String getCorreo() {
-        return this.correo;
+        return correo;
     }
-
     public void setCorreo(String correo) {
         this.correo = correo;
     }
-
     public String getUserName() {
-        return this.userName;
+        return userName;
     }
-
     public void setUserName(String userName) {
         this.userName = userName;
     }
-
     public String getPassword() {
-        return this.password;
+        return password;
     }
-
     public void setPassword(String password) {
         this.password = password;
     }
 
-    
+   
+
 }
