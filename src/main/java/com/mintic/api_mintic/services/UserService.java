@@ -43,7 +43,7 @@ public class UserService implements IUserService{
 
         UserEntity userEntityDto = modelMapper.map(userCreateDto, UserEntity.class);
         userEntityDto.setUserId(UUID.randomUUID().toString());
-        userEntityDto.setEcryptedPassword(bCryptPasswordEncoder.encode(userCreateDto.getPassword()));
+        userEntityDto.setEncryptedPassword(bCryptPasswordEncoder.encode(userCreateDto.getPassword()));
 
         UserEntity userEntitySave = iUserRepository.save(userEntityDto);
 
@@ -61,7 +61,7 @@ public class UserService implements IUserService{
             throw new UsernameNotFoundException(username);
         }
         
-        return new User(userEntity.getUserName(),userEntity.getEcryptedPassword(),new ArrayList<>());
+        return new User(userEntity.getUserName(),userEntity.getEncryptedPassword(),new ArrayList<>());
     }
 
     @Override

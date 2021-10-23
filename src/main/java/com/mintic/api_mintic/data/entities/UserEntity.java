@@ -11,15 +11,36 @@ import javax.persistence.Id;
 // import javax.persistence.OneToMany;
 // import javax.persistence.Table;
 
-@Entity(name="usuarios")
+//@Entity(name="usuarios")
 // @Table(indexes = {
 //     @Index(columnList = "userId",name = "index_userid",unique = true),
 //     @Index(columnList = "userName",name = "index_username",unique = true),
 //     @Index(columnList = "correo",name = "index_correo",unique = true)
 // })
-public class UserEntity implements Serializable{
+@Entity(name = "candidatos")
+public class UserEntity implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+     @Id
+    @GeneratedValue
+    private long id;
+
+    @Column(nullable = false)
+    private String userId;
+
+    @Column(nullable = false, length = 50)
+    private String nombre;
+
+  
+    @Column(nullable = false, length = 50)
+    private String correo;
+
+    @Column(nullable = false, length = 50)
+    private String userName;
+
+
+    @Column(nullable = false)
+    private String encryptedPassword;
+
     
 
     public long getId() {
